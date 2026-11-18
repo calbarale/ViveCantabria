@@ -6,7 +6,10 @@
 <title>ViveCantabria</title>
 <meta name="description" content="Restaurantes, miradores, rutas, pueblos y playas de Cantabria. Busca dónde estás y ordena los sitios por cercanía.">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#12302d">
 
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://tile.openstreetmap.org">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
@@ -27,7 +30,7 @@
 
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html { scroll-padding-top: 12px; }
+  html { scroll-padding-top: 12px; -webkit-tap-highlight-color: rgba(18, 48, 45, 0.12); }
 
   body {
     margin: 0;
@@ -39,6 +42,21 @@
   }
 
   :focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+  .cabecera :focus-visible { outline-color: #fff; }
+
+  .saltar {
+    position: absolute;
+    left: 12px;
+    top: -64px;
+    z-index: 2000;
+    padding: 10px 14px;
+    background: var(--yema);
+    color: var(--ink);
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+  .saltar:focus { top: 12px; }
 
   .sr {
     position: absolute;
@@ -61,6 +79,7 @@
     font-size: clamp(2rem, 5.5vw, 3.4rem);
     line-height: 1.02;
     letter-spacing: -0.02em;
+    text-wrap: balance;
   }
 
   .cabecera p.intro { margin: 0 0 18px; max-width: 52ch; color: #cfe0db; }
@@ -121,6 +140,8 @@
     cursor: pointer;
   }
   .chip:hover { border-color: var(--ink); }
+
+  .btn, .chip, .tarjeta-cuerpo { touch-action: manipulation; }
   .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
 
   /* Segunda fila: tipos dentro de una categoría */
@@ -170,13 +191,15 @@
     cursor: pointer;
   }
 
+  .tarjeta-cuerpo:hover { background: #f1f7f5; }
+  .tarjeta-cuerpo > * { min-width: 0; }
   .tarjeta-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-  .nombre { font-weight: 600; font-size: 1.08rem; }
-  .dist { font-weight: 600; color: var(--azul); white-space: nowrap; font-size: 0.95rem; }
-  .tipo, .dir { color: var(--ink-suave); font-size: 0.92rem; }
-  .nota { margin-top: 4px; font-size: 0.92rem; }
+  .nombre { min-width: 0; overflow-wrap: anywhere; font-weight: 600; font-size: 1.08rem; }
+  .dist { font-weight: 600; color: var(--azul); white-space: nowrap; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+  .tipo, .dir { color: var(--ink-suave); font-size: 0.92rem; overflow-wrap: anywhere; }
+  .nota { margin-top: 4px; font-size: 0.92rem; overflow-wrap: anywhere; }
 
-  .detalles { display: flex; flex-wrap: wrap; gap: 2px 16px; margin-top: 4px; font-size: 0.9rem; }
+  .detalles { display: flex; flex-wrap: wrap; gap: 2px 16px; margin-top: 4px; font-size: 0.9rem; overflow-wrap: anywhere; }
   .detalles b { font-weight: 600; }
 
   .acciones {
@@ -246,15 +269,17 @@
 </head>
 
 <body>
+  <a class="saltar" href="#principal">Saltar al contenido</a>
+
   <header class="cabecera">
     <div class="cabecera-in">
-      <h1>ViveCantabria</h1>
+      <h1 translate="no">ViveCantabria</h1>
       <p class="intro">Restaurantes, miradores, rutas, pueblos y playas. Escribe dónde estás o usa tu ubicación y verás lo que tienes más cerca.</p>
 
       <form id="form-busqueda" class="buscador" role="search">
         <label class="sr" for="direccion">Pueblo, calle o alojamiento</label>
-        <input id="direccion" type="search" placeholder="Pueblo, calle o alojamiento" autocomplete="off">
-        <button type="submit" class="btn btn-primario">Buscar</button>
+        <input id="direccion" type="search" name="lugar" placeholder="Ej. Santillana del Mar…" autocomplete="off">
+        <button type="submit" id="btn-buscar" class="btn btn-primario">Buscar</button>
         <button type="button" id="btn-ubicacion" class="btn btn-secundario">Usar mi ubicación</button>
       </form>
 
@@ -262,11 +287,12 @@
     </div>
   </header>
 
-  <main class="contenido">
-    <section class="panel" aria-label="Lista de sitios">
+  <main id="principal" class="contenido">
+    <section class="panel" aria-labelledby="h-sitios">
+      <h2 id="h-sitios" class="sr">Sitios</h2>
       <div id="filtros" class="filtros" role="group" aria-label="Filtrar por categoría"></div>
       <div id="filtros-tipo" class="filtros filtros-tipo" role="group" aria-label="Filtrar por tipo" hidden></div>
-      <p id="resumen" class="resumen"></p>
+      <p id="resumen" class="resumen" aria-live="polite"></p>
       <ol id="lista" class="lista"></ol>
     </section>
 
@@ -306,8 +332,8 @@
     }
 
     function formatoDistancia(m) {
-      if (m < 1000) return Math.round(m / 10) * 10 + ' m';
-      return (m / 1000).toLocaleString('es-ES', { maximumFractionDigits: 1 }) + ' km';
+      if (m < 1000) return Math.round(m / 10) * 10 + '\u00A0m';
+      return (m / 1000).toLocaleString('es-ES', { maximumFractionDigits: 1 }) + '\u00A0km';
     }
 
     // Google Maps se abre buscando el sitio por nombre + dirección (no por coordenadas).
@@ -322,7 +348,11 @@
     const urlRuta = (r) => 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(textoMaps(r));
 
     // ---------- Mapa ----------
-    const mapa = L.map('mapa').setView([43.2, -4.0], 9);
+    const mapa = L.map('mapa', {
+      zoomAnimation: !reduceMotion,
+      fadeAnimation: !reduceMotion,
+      markerZoomAnimation: !reduceMotion
+    }).setView([43.2, -4.0], 9);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -345,6 +375,18 @@
     let activo = null;
     let marcadorOrigen = null;
     let circuloPrecision = null;
+    let lugarBuscado = null;
+    let buscando = false;
+
+    // El estado (filtros y lugar buscado) vive en la URL para poder compartirla:  ?cat=Rutas&tipo=Costera&q=Santillana
+    function escribirUrl() {
+      const p = new URLSearchParams();
+      if (filtroCat !== 'Todos') p.set('cat', filtroCat);
+      if (filtroTipo !== 'Todos') p.set('tipo', filtroTipo);
+      if (lugarBuscado) p.set('q', lugarBuscado);
+      const s = p.toString();
+      try { history.replaceState(null, '', location.pathname + (s ? '?' + s : '') + location.hash); } catch (e) {}
+    }
 
     const visibles = () => sitios.filter((s) =>
       (filtroCat === 'Todos' || s.r.categoria === filtroCat) &&
@@ -353,12 +395,12 @@
 
     // ---------- Pintar ----------
     function lineaCategoria(r) {
-      return `<i class="punto" style="background:${colorDe(r.categoria)}"></i>${esc(r.categoria)}${r.tipo ? ': ' + esc(r.tipo) : ''}`;
+      return `<span class="punto" aria-hidden="true" style="background:${colorDe(r.categoria)}"></span>${esc(r.categoria)}${r.tipo ? ': ' + esc(r.tipo) : ''}`;
     }
 
     function popupHtml(r) {
       return `<div class="pop">
-        <strong>${esc(r.nombre)}</strong>
+        <strong translate="no">${esc(r.nombre)}</strong>
         <span>${lineaCategoria(r)}</span>
         ${r.direccion ? `<span>${esc(r.direccion)}</span>` : ''}
         <a href="${urlVer(r)}" target="_blank" rel="noopener">Ver en Google Maps</a>
@@ -379,7 +421,7 @@
       return `<li class="tarjeta" id="t-${s.i}">
         <button type="button" class="tarjeta-cuerpo" data-i="${s.i}">
           <span class="tarjeta-top">
-            <span class="nombre">${esc(r.nombre)}</span>
+            <span class="nombre" translate="no">${esc(r.nombre)}</span>
             ${s.dist != null ? `<span class="dist">${formatoDistancia(s.dist)}</span>` : ''}
           </span>
           <span class="tipo">${lineaCategoria(r)}</span>
@@ -440,7 +482,7 @@
     // ---------- Filtros (categoría y, dentro de ella, tipo) ----------
     function chipHtml(valor, pulsado, color) {
       return `<button type="button" class="chip" aria-pressed="${pulsado}" data-valor="${esc(valor)}">${
-        color ? `<i class="punto" style="background:${color}"></i>` : ''
+        color ? `<span class="punto" aria-hidden="true" style="background:${color}"></span>` : ''
       }${esc(valor)}</button>`;
     }
 
@@ -479,6 +521,7 @@
       construirFiltrosTipo();
       pintar();
       ajustarVista();
+      escribirUrl();
     });
 
     $('#filtros-tipo').addEventListener('click', (e) => {
@@ -488,6 +531,7 @@
       construirFiltrosTipo();
       pintar();
       ajustarVista();
+      escribirUrl();
     });
 
     $('#lista').addEventListener('click', (e) => {
@@ -528,11 +572,14 @@
     }
 
     // ---------- Buscar un lugar (Nominatim / OpenStreetMap), con preferencia por Cantabria ----------
-    $('#form-busqueda').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const q = $('#direccion').value.trim();
+    async function buscarLugar(q) {
+      if (buscando) return;
       if (!q) { estado('Escribe un pueblo, una calle o el nombre de tu alojamiento.', true); return; }
 
+      buscando = true;
+      const btn = $('#btn-buscar');
+      btn.disabled = true;
+      btn.textContent = 'Buscando…';
       estado('Buscando…');
       try {
         const url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=es&countrycodes=es&viewbox=-4.9,43.6,-3.1,42.7&q='
@@ -547,10 +594,21 @@
         }
         const d = datos[0];
         fijarOrigen([parseFloat(d.lat), parseFloat(d.lon)], d.display_name);
+        lugarBuscado = q;
+        escribirUrl();
         estado('Sitios cerca de: ' + d.display_name.split(',').slice(0, 3).join(','));
       } catch (err) {
         estado('No se pudo buscar ahora. Inténtalo de nuevo en un momento.', true);
+      } finally {
+        buscando = false;
+        btn.disabled = false;
+        btn.textContent = 'Buscar';
       }
+    }
+
+    $('#form-busqueda').addEventListener('submit', (e) => {
+      e.preventDefault();
+      buscarLugar($('#direccion').value.trim());
     });
 
     // ---------- Usar mi ubicación ----------
@@ -563,6 +621,8 @@
       navigator.geolocation.getCurrentPosition(
         (p) => {
           fijarOrigen([p.coords.latitude, p.coords.longitude], 'Tu ubicación', p.coords.accuracy);
+          lugarBuscado = null;
+          escribirUrl();
           estado('Ordenado por cercanía a tu ubicación.');
         },
         (err) => {
@@ -611,6 +671,14 @@
         return s;
       });
 
+      const params = new URLSearchParams(location.search);
+      const catUrl = params.get('cat');
+      if (catUrl && sitios.some((s) => s.r.categoria === catUrl)) {
+        filtroCat = catUrl;
+        const tipoUrl = params.get('tipo');
+        if (tipoUrl && sitios.some((s) => s.r.categoria === catUrl && s.r.tipo === tipoUrl)) filtroTipo = tipoUrl;
+      }
+
       construirFiltros();
       construirFiltrosTipo();
       pintar();
@@ -626,8 +694,12 @@
         estado('Sitios sin lat/lng válidos (no se muestran): ' + sinCoordenadas.join(', '), true);
       }
 
-      // Si ya diste permiso de ubicación antes, se usa solo; si no, hay que pulsar el botón
-      if (navigator.permissions) {
+      // Si la URL trae un lugar (?q=...), se busca. Si no y ya diste permiso de ubicación antes, se usa solo.
+      const qUrl = params.get('q');
+      if (qUrl) {
+        $('#direccion').value = qUrl;
+        buscarLugar(qUrl);
+      } else if (navigator.permissions) {
         navigator.permissions.query({ name: 'geolocation' })
           .then((p) => { if (p.state === 'granted') ubicar(); })
           .catch(() => {});
