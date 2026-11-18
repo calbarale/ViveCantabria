@@ -1,0 +1,24 @@
+[
+  {
+    "nombre": "Faro de Cabo Mayor",
+    "tipo": "Vistas al mar",
+    "direccion": "Faro de Cabo Mayor, Santander",
+    "lat": 43.4903,
+    "lng": -3.7906,
+    "nota": "Ejemplo: escribe aquí tu consejo, como la mejor hora para ir."
+  },
+  {
+    "nombre": "Peña Cabarga",
+    "tipo": "Vistas a la bahía",
+    "direccion": "Peña Cabarga, Medio Cudeyo",
+    "lat": 43.3791,
+    "lng": -3.7786
+  },
+  {
+    "nombre": "Fuente Dé (teleférico)",
+    "tipo": "Picos de Europa",
+    "direccion": "Teleférico de Fuente Dé, Camaleño",
+    "lat": 43.1488,
+    "lng": -4.8088
+  }
+]

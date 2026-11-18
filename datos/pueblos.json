@@ -1,0 +1,45 @@
+[
+  {
+    "nombre": "Santillana del Mar",
+    "tipo": "Medieval",
+    "direccion": "Santillana del Mar, Cantabria",
+    "lat": 43.3907,
+    "lng": -4.1080,
+    "nota": "Ejemplo: escribe aquí qué ver y cuánto tiempo dedicarle."
+  },
+  {
+    "nombre": "Comillas",
+    "tipo": "Modernista",
+    "direccion": "Comillas, Cantabria",
+    "lat": 43.3855,
+    "lng": -4.2901
+  },
+  {
+    "nombre": "San Vicente de la Barquera",
+    "tipo": "Costero",
+    "direccion": "San Vicente de la Barquera, Cantabria",
+    "lat": 43.3832,
+    "lng": -4.4003
+  },
+  {
+    "nombre": "Liérganes",
+    "tipo": "Interior",
+    "direccion": "Liérganes, Cantabria",
+    "lat": 43.3457,
+    "lng": -3.7432
+  },
+  {
+    "nombre": "Potes",
+    "tipo": "Montaña",
+    "direccion": "Potes, Cantabria",
+    "lat": 43.1537,
+    "lng": -4.6234
+  },
+  {
+    "nombre": "Bárcena Mayor",
+    "tipo": "Montaña",
+    "direccion": "Bárcena Mayor, Los Tojos, Cantabria",
+    "lat": 43.1430,
+    "lng": -4.1933
+  }
+]

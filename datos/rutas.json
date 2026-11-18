@@ -1,0 +1,26 @@
+[
+  {
+    "nombre": "Dunas de Liencres",
+    "tipo": "Costera",
+    "direccion": "Parque Natural Dunas de Liencres, Piélagos",
+    "lat": 43.4561,
+    "lng": -3.9520,
+    "detalles": { "Distancia": "por rellenar", "Dificultad": "por rellenar" },
+    "nota": "Ejemplo: el punto marca el inicio. Enlaza el track con el campo web."
+  },
+  {
+    "nombre": "Monte Buciero",
+    "tipo": "Monte y costa",
+    "direccion": "Monte Buciero, Santoña",
+    "lat": 43.4512,
+    "lng": -3.4369,
+    "web": "https://www.wikiloc.com"
+  },
+  {
+    "nombre": "Cascada del Gándara",
+    "tipo": "Cascada",
+    "direccion": "Cascadas del río Gándara, Soba",
+    "lat": 43.1927,
+    "lng": -3.5664
+  }
+]

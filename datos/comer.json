@@ -1,0 +1,47 @@
+[
+  {
+    "nombre": "Cafetería de ejemplo",
+    "tipo": "Desayunos",
+    "direccion": "Calle de ejemplo 1, Santander",
+    "lat": 43.4645,
+    "lng": -3.8085,
+    "nota": "Ejemplo: sustituye estos sitios por los tuyos. Es un nombre inventado."
+  },
+  {
+    "nombre": "Bar de ejemplo",
+    "tipo": "Rabas y raciones",
+    "direccion": "Calle de ejemplo 2, Santander",
+    "lat": 43.4605,
+    "lng": -3.8130
+  },
+  {
+    "nombre": "Restaurante de ejemplo 1",
+    "tipo": "Marisco",
+    "direccion": "Calle de ejemplo 3, Santoña",
+    "lat": 43.4449,
+    "lng": -3.4554,
+    "detalles": { "Reserva": "recomendada (ejemplo)" }
+  },
+  {
+    "nombre": "Restaurante de ejemplo 2",
+    "tipo": "Pescado",
+    "direccion": "Calle de ejemplo 4, San Vicente de la Barquera",
+    "lat": 43.3832,
+    "lng": -4.4003
+  },
+  {
+    "nombre": "Mesón de ejemplo",
+    "tipo": "Cocina tradicional",
+    "direccion": "Plaza de ejemplo 5, Comillas",
+    "lat": 43.3855,
+    "lng": -4.2901,
+    "web": "https://ejemplo.com"
+  },
+  {
+    "nombre": "Casa de comidas de ejemplo",
+    "tipo": "Cocina de montaña",
+    "direccion": "Calle de ejemplo 6, Potes",
+    "lat": 43.1537,
+    "lng": -4.6234
+  }
+]

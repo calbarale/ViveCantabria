@@ -1,0 +1,38 @@
+[
+  {
+    "nombre": "El Sardinero",
+    "tipo": "Urbana",
+    "direccion": "Playa de El Sardinero, Santander",
+    "lat": 43.4773,
+    "lng": -3.7872,
+    "nota": "Ejemplo: aquí puedes avisar de parking, mareas o si se admiten perros."
+  },
+  {
+    "nombre": "Somo",
+    "tipo": "Surf",
+    "direccion": "Playa de Somo, Ribamontán al Mar",
+    "lat": 43.4595,
+    "lng": -3.7314
+  },
+  {
+    "nombre": "Oyambre",
+    "tipo": "Surf",
+    "direccion": "Playa de Oyambre, San Vicente de la Barquera",
+    "lat": 43.3940,
+    "lng": -4.3359
+  },
+  {
+    "nombre": "Berria",
+    "tipo": "Natural",
+    "direccion": "Playa de Berria, Santoña",
+    "lat": 43.4650,
+    "lng": -3.4685
+  },
+  {
+    "nombre": "Langre",
+    "tipo": "Natural",
+    "direccion": "Playa de Langre, Ribamontán al Mar",
+    "lat": 43.4757,
+    "lng": -3.6895
+  }
+]
