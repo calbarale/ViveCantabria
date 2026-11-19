@@ -2,61 +2,54 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ViveCantabria</title>
-<meta name="description" content="Restaurantes, miradores, rutas, pueblos y playas de Cantabria. Busca dónde estás y ordena los sitios por cercanía.">
+<meta name="description" content="Descubre los mejores sitios de Cantabria cerca de ti: restaurantes, miradores, rutas, pueblos y playas.">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#12302d">
+<meta name="theme-color" content="#fdeedf">
 
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="preconnect" href="https://tile.openstreetmap.org">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 
 <style>
   :root {
-    --ink: #12302d;
-    --ink-suave: #3d5a56;
-    --papel: #f2f6f4;
-    --tarjeta: #ffffff;
-    --linea: #d3dfda;
-    --yema: #f4b32a;
+    --fondo: #fcf3ec;
+    --fondo-2: #fbe6d4;
+    --tarjeta: #fffcfa;
+    --ink: #3a2318;
+    --ink-suave: #6b5648;
+    --linea: #ecdacb;
+    --naranja: #f08a3e;
+    --naranja-osc: #c9601a;
+    --melocoton: #fbe3c6;
     --azul: #0b6bcb;
-    --fuente-titulo: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-    --fuente-texto: "Figtree", "Segoe UI", system-ui, sans-serif;
+    --verde: #2fa35a;
+    --fuente-titulo: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+    --fuente-texto: "Nunito", "Segoe UI", system-ui, sans-serif;
+    --alto-nav: 68px;
   }
 
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html { scroll-padding-top: 12px; -webkit-tap-highlight-color: rgba(18, 48, 45, 0.12); }
+  html { scroll-padding-top: 12px; -webkit-tap-highlight-color: rgba(240, 138, 62, 0.18); }
 
   body {
     margin: 0;
-    background: var(--papel);
+    background: var(--fondo);
     color: var(--ink);
     font-family: var(--fuente-texto);
     font-size: 1rem;
     line-height: 1.5;
   }
+  body:has(dialog[open]) { overflow: hidden; }
+
+  h1, h2, h3 { font-family: var(--fuente-titulo); margin: 0; }
 
   :focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
-  .cabecera :focus-visible { outline-color: #fff; }
-
-  .saltar {
-    position: absolute;
-    left: 12px;
-    top: -64px;
-    z-index: 2000;
-    padding: 10px 14px;
-    background: var(--yema);
-    color: var(--ink);
-    font-weight: 600;
-    border-radius: 8px;
-    text-decoration: none;
-  }
-  .saltar:focus { top: 12px; }
 
   .sr {
     position: absolute;
@@ -68,239 +61,484 @@
     border: 0;
   }
 
-  /* ---------- Cabecera ---------- */
-  .cabecera { position: relative; z-index: 30; background: var(--ink); color: #fff; padding: 28px 20px 22px; }
-  .cabecera-in { max-width: 1240px; margin: 0 auto; }
+  .saltar {
+    position: absolute;
+    left: 12px;
+    top: -64px;
+    z-index: 2000;
+    padding: 10px 14px;
+    background: var(--naranja);
+    color: var(--ink);
+    font-weight: 700;
+    border-radius: 12px;
+    text-decoration: none;
+  }
+  .saltar:focus { top: 12px; }
 
-  .cabecera h1 {
-    margin: 0 0 6px;
-    font-family: var(--fuente-titulo);
-    font-weight: 800;
-    font-size: clamp(2rem, 5.5vw, 3.4rem);
-    line-height: 1.02;
-    letter-spacing: -0.02em;
+  .btn, .chip, .cat, .nav-it, .tarjeta-cuerpo, .corazon, .pildora { touch-action: manipulation; font-family: inherit; }
+  svg { display: block; }
+
+  /* ---------- Cabecera ---------- */
+  .hero {
+    position: relative;
+    z-index: 30;
+    overflow-x: clip;
+    background: linear-gradient(180deg, #fdeedf 0%, var(--fondo) 100%);
+    padding: calc(18px + env(safe-area-inset-top)) 20px 26px;
+  }
+  .hero::before, .hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: #f9d3b1;
+    opacity: 0.6;
+    z-index: -1;
+  }
+  .hero::before { width: 360px; height: 360px; right: -90px; top: -150px; }
+  .hero::after { width: 200px; height: 200px; left: -90px; top: 90px; background: #fbdcc0; }
+
+  .hero-in { max-width: 1240px; margin: 0 auto; }
+
+  .hero-top { display: flex; justify-content: flex-end; min-height: 44px; }
+
+  .marca-bloque { display: flex; align-items: center; gap: 14px; margin: 4px 0 6px; }
+  .hero h1 {
+    font-weight: 700;
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
     text-wrap: balance;
   }
+  .hero h1 span { color: var(--naranja-osc); }
 
-  .cabecera p.intro { margin: 0 0 18px; max-width: 52ch; color: #cfe0db; }
+  .lema { margin: 8px 0 0; font-size: 1.15rem; max-width: 34ch; font-weight: 600; text-wrap: balance; }
+  .subrayado { width: 120px; height: 10px; margin: 6px 0 20px; }
 
-  .buscador { display: flex; flex-wrap: wrap; gap: 10px; }
+  .buscador { display: flex; flex-wrap: wrap; gap: 10px 12px; align-items: center; max-width: 760px; }
 
-  .campo-busqueda { position: relative; flex: 1 1 260px; min-width: 0; }
+  .campo-busqueda { position: relative; flex: 1 1 100%; min-width: 0; }
+  .lupa { position: absolute; left: 18px; top: 50%; translate: 0 -50%; width: 22px; height: 22px; color: var(--ink); pointer-events: none; }
 
   .campo-busqueda input {
     width: 100%;
-    height: 48px;
-    padding: 0 14px;
-    border: 0;
-    border-radius: 10px;
+    height: 58px;
+    padding: 0 68px 0 52px;
+    border: 1.5px solid var(--linea);
+    border-radius: 999px;
     font: inherit;
     color: var(--ink);
     background: #fff;
+    box-shadow: 0 2px 10px rgba(201, 96, 26, 0.08);
   }
+  .campo-busqueda input::placeholder { color: #8a7467; }
 
-  .btn {
-    height: 48px;
-    padding: 0 18px;
-    border-radius: 10px;
-    font: inherit;
-    font-weight: 600;
+  .btn-buscar {
+    position: absolute;
+    right: 7px; top: 50%;
+    translate: 0 -50%;
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--naranja);
+    color: var(--ink);
     cursor: pointer;
-    border: 2px solid transparent;
   }
-  .btn-primario { background: var(--yema); color: var(--ink); }
-  .btn-primario:hover { background: #ffc54d; }
-  .btn-secundario { background: transparent; color: #fff; border-color: #6f8d88; }
-  .btn-secundario:hover { border-color: #fff; }
+  .btn-buscar:hover { background: #f59a55; }
+  .btn-buscar:disabled { opacity: 0.55; cursor: progress; }
+  .btn-buscar svg { width: 22px; height: 22px; }
 
-  .estado { min-height: 1.5em; margin: 12px 0 0; font-size: 0.95rem; color: #cfe0db; }
-  .estado.error { color: #ffd7a8; }
+  .pildora {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 44px;
+    padding: 0 18px 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--melocoton);
+    color: var(--ink);
+    font-size: 0.98rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pildora:hover { background: #f9d7ae; }
+  .pildora svg { width: 20px; height: 20px; }
+
+  .estado { flex: 1 1 200px; min-height: 1.5em; margin: 0; font-size: 0.95rem; color: var(--ink-suave); }
+  .estado.error { color: #a4410c; font-weight: 600; }
+
+  /* ---------- Navegación: pestañas arriba (escritorio) / barra inferior (móvil) ---------- */
+  .nav { display: flex; gap: 6px; }
+  .nav-it {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.98rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .nav-it svg { width: 22px; height: 22px; }
+  .nav-it:hover { background: rgba(240, 138, 62, 0.16); }
+  .nav-it[aria-current], .nav-it[aria-pressed="true"] { background: var(--melocoton); }
+  .cuenta { margin-left: 5px; padding: 0 7px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 0.78rem; }
+  .cuenta:empty { display: none; }
 
   /* ---------- Sugerencias del buscador ---------- */
   .sugerencias {
     position: absolute;
     z-index: 50;
-    top: calc(100% + 6px);
-    left: 0;
-    right: 0;
+    top: calc(100% + 8px);
+    left: 0; right: 0;
     margin: 0;
-    padding: 6px;
+    padding: 8px;
     list-style: none;
     background: #fff;
     color: var(--ink);
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 22px;
+    box-shadow: 0 14px 34px rgba(58, 35, 24, 0.22);
     max-height: min(60vh, 360px);
     overflow: auto;
   }
-
-  .sug-grupo {
-    padding: 8px 10px 4px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--ink-suave);
-  }
-
-  .sug {
-    display: grid;
-    gap: 1px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  .sug:hover { background: #eef4f2; }
-  .sug[aria-selected="true"] { background: #e3eeea; box-shadow: inset 3px 0 0 var(--ink); }
-  .sug b { font-weight: 600; overflow-wrap: anywhere; }
+  .sug-grupo { padding: 8px 12px 4px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-suave); }
+  .sug { display: grid; gap: 1px; padding: 10px 12px; border-radius: 14px; cursor: pointer; touch-action: manipulation; }
+  .sug:hover { background: #fdf1e6; }
+  .sug[aria-selected="true"] { background: var(--melocoton); box-shadow: inset 4px 0 0 var(--naranja); }
+  .sug b { font-weight: 700; overflow-wrap: anywhere; }
   .sug span { font-size: 0.88rem; color: var(--ink-suave); overflow-wrap: anywhere; }
 
-  /* ---------- Contenido ---------- */
-  .contenido {
-    max-width: 1240px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: minmax(320px, 430px) 1fr;
-    align-items: start;
+  /* ---------- Secciones ---------- */
+  main { max-width: 1240px; margin: 0 auto; padding: 8px 20px 40px; }
+  .seccion { margin-top: 26px; }
+  .seccion-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .seccion h2 { font-size: 1.5rem; font-weight: 600; }
+  .ver-todo { color: var(--naranja-osc); font-weight: 700; text-decoration: none; white-space: nowrap; }
+  .ver-todo:hover { text-decoration: underline; }
+
+  /* ---------- Recomendaciones ---------- */
+  .destacados {
+    list-style: none; margin: 0; padding: 2px 2px 10px;
+    display: flex; gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
   }
+  .dest {
+    --c: var(--naranja);
+    position: relative;
+    flex: 0 0 min(88%, 420px);
+    height: 240px;
+    border-radius: 26px;
+    overflow: hidden;
+    scroll-snap-align: start;
+    color: #fff;
+    background: linear-gradient(135deg, var(--c), color-mix(in srgb, var(--c) 55%, #3a2318));
+  }
+  .dest-fondo { position: absolute; inset: 0; display: grid; place-items: center; font-size: 84px; opacity: 1; }
+  .dest-fondo .ico { opacity: 0.35; }
+  .dest-fondo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .dest::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(40, 20, 10, 0.82) 8%, rgba(40, 20, 10, 0.05) 62%); }
+  .insignia {
+    position: absolute; z-index: 2; left: 14px; top: 14px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #fde9c4;
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .dest .corazon { position: absolute; z-index: 2; right: 12px; top: 12px; color: #fff; background: rgba(40, 20, 10, 0.28); }
+  .dest-pie { position: absolute; z-index: 2; left: 18px; right: 16px; bottom: 16px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .dest-nombre { font-size: 1.5rem; font-weight: 600; line-height: 1.1; overflow-wrap: anywhere; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
+  .dest-meta { margin: 4px 0 0; font-size: 0.95rem; font-weight: 600; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
+  .btn-det {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--naranja);
+    color: var(--ink);
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-det:hover { background: #f59a55; }
+  .btn-det svg { width: 16px; height: 16px; }
 
-  .panel { padding: 20px; }
+  /* ---------- Categorías ---------- */
+  .categorias { display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 8px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+  .cat {
+    --c: var(--naranja);
+    flex: 0 0 auto;
+    display: grid; justify-items: center; gap: 8px;
+    width: 92px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    scroll-snap-align: start;
+  }
+  .cat-ico {
+    display: grid; place-items: center;
+    width: 76px; height: 76px;
+    border-radius: 24px;
+    background: color-mix(in srgb, var(--c) 22%, #fff);
+    font-size: 36px;
+    line-height: 1;
+    border: 3px solid transparent;
+  }
+  .cat:hover .cat-ico { border-color: color-mix(in srgb, var(--c) 60%, #fff); }
+  .cat[aria-pressed="true"] .cat-ico { border-color: var(--ink); }
+  .cat[aria-pressed="true"] { font-weight: 700; }
 
-  .filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-
+  .filtros-tipo { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .chip {
-    padding: 6px 14px;
+    padding: 5px 14px;
     border-radius: 999px;
     border: 1.5px solid var(--linea);
-    background: var(--tarjeta);
+    background: transparent;
     color: var(--ink);
-    font: inherit;
-    font-size: 0.92rem;
-    font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
   }
   .chip:hover { border-color: var(--ink); }
-
-  .btn, .chip, .tarjeta-cuerpo { touch-action: manipulation; }
-
   .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
 
-  .filtros-tipo .chip { padding: 3px 12px; font-size: 0.86rem; background: transparent; }
-  .filtros-tipo .chip[aria-pressed="true"] { background: var(--yema); border-color: var(--ink); color: var(--ink); }
+  .punto { display: inline-block; width: 10px; height: 10px; margin-right: 7px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: baseline; }
 
-  .punto {
-    display: inline-block;
-    width: 10px; height: 10px;
-    margin-right: 7px;
-    border-radius: 50%;
-    border: 2px solid var(--ink);
-    vertical-align: baseline;
+  /* ---------- Cerca de ti ---------- */
+  .resumen { margin: 0 0 14px; color: var(--ink-suave); font-size: 0.95rem; }
+
+  .cerca-grid { display: grid; grid-template-columns: minmax(330px, 450px) 1fr; gap: 24px; align-items: start; }
+
+  .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+
+  .tarjeta {
+    --c: var(--naranja);
+    position: relative;
+    background: var(--tarjeta);
+    border: 1.5px solid var(--linea);
+    border-radius: 22px;
+    overflow: hidden;
   }
-  .chip[aria-pressed="true"] .punto { border-color: #fff; }
-
-  .resumen { margin: 0 0 12px; color: var(--ink-suave); font-size: 0.95rem; }
-
-  .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-
-  .tarjeta { background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; }
-  .tarjeta.activa { border-color: var(--ink); box-shadow: 0 0 0 2px var(--yema); }
+  .tarjeta.activa { border-color: var(--ink); box-shadow: 0 0 0 3px var(--naranja); }
 
   .tarjeta-cuerpo {
     display: grid;
-    gap: 2px;
+    grid-template-columns: 104px 1fr;
+    gap: 14px;
     width: 100%;
-    padding: 14px 16px 12px;
+    padding: 14px 52px 10px 14px;
     text-align: left;
-    font: inherit;
     color: inherit;
     background: none;
     border: 0;
     cursor: pointer;
   }
-  .tarjeta-cuerpo:hover { background: #f1f7f5; }
+  .tarjeta-cuerpo:hover { background: #fff6ee; }
   .tarjeta-cuerpo > * { min-width: 0; }
+  .tarjeta-info { display: grid; gap: 3px; align-content: start; }
 
-  .tarjeta-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-  .nombre { min-width: 0; overflow-wrap: anywhere; font-weight: 600; font-size: 1.08rem; }
-  .dist { font-weight: 600; color: var(--azul); white-space: nowrap; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
-  .tipo, .dir { color: var(--ink-suave); font-size: 0.92rem; overflow-wrap: anywhere; }
-  .nota { margin-top: 4px; font-size: 0.92rem; overflow-wrap: anywhere; }
-
-  .detalles { display: flex; flex-wrap: wrap; gap: 2px 16px; margin-top: 4px; font-size: 0.9rem; overflow-wrap: anywhere; }
-  .detalles b { font-weight: 600; }
-
-  .acciones {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 18px;
-    padding: 10px 16px;
-    border-top: 1px solid var(--linea);
-    background: #f8fbfa;
+  .media {
+    position: relative;
+    display: grid; place-items: center;
+    width: 104px; height: 104px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--c) 26%, #fff);
+    font-size: 42px;
   }
+  .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-  .acciones a, .pop a {
+  .nombre { overflow-wrap: anywhere; font-family: var(--fuente-titulo); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
+  .meta { color: var(--ink-suave); font-size: 0.92rem; font-weight: 600; overflow-wrap: anywhere; }
+  .dist-meta { display: inline-flex; align-items: center; gap: 4px; margin-right: 8px; color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .dist-meta svg { width: 14px; height: 14px; }
+  .dir { color: var(--ink-suave); font-size: 0.9rem; overflow-wrap: anywhere; }
+  .nota { font-size: 0.92rem; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .mini-detalles { font-size: 0.88rem; color: var(--ink-suave); overflow-wrap: anywhere; }
+  .etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .etiqueta { padding: 2px 10px; border-radius: 999px; background: var(--melocoton); font-size: 0.82rem; font-weight: 700; }
+
+  .acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 4px 14px 14px; }
+  .acciones a { color: var(--ink); font-weight: 700; font-size: 0.92rem; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--naranja); text-decoration-thickness: 2px; }
+  .acciones a:hover { text-decoration-color: var(--ink); }
+  .acciones .btn-det { margin-left: auto; padding: 7px 14px; }
+
+  .corazon {
+    display: grid; place-items: center;
+    width: 40px; height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
     color: var(--ink);
-    font-weight: 600;
-    font-size: 0.92rem;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--yema);
-    text-decoration-thickness: 2px;
+    cursor: pointer;
   }
-  .acciones a:hover, .pop a:hover { text-decoration-color: var(--ink); }
+  .corazon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+  .corazon[aria-pressed="true"] svg { fill: #e5484d; stroke: #e5484d; }
+  .dest .corazon[aria-pressed="true"] svg { fill: #ff6b6f; stroke: #ff6b6f; }
+  .tarjeta > .corazon { position: absolute; right: 8px; top: 8px; }
+  .corazon:hover { background: rgba(240, 138, 62, 0.16); }
 
-  .vacio { padding: 18px; border: 1.5px dashed var(--linea); border-radius: 12px; color: var(--ink-suave); }
+  .vacio { padding: 18px; border: 2px dashed var(--linea); border-radius: 18px; color: var(--ink-suave); }
 
   /* ---------- Mapa ---------- */
-  .mapa-wrap { position: sticky; top: 0; height: 100vh; height: 100dvh; }
-  #mapa { height: 100%; width: 100%; background: #dfe8e4; }
+  .mapa-wrap {
+    position: sticky;
+    top: 16px;
+    height: min(calc(100vh - 32px), 760px);
+    height: min(calc(100dvh - 32px), 760px);
+    border-radius: 26px;
+    overflow: hidden;
+    border: 1.5px solid var(--linea);
+  }
+  #mapa { height: 100%; width: 100%; background: #efe6dd; }
 
-  .pin-wrap { width: 28px; height: 34px; cursor: pointer; background: none; border: 0; }
+  .chip-radio { position: absolute; z-index: 5; left: 12px; top: 12px; max-width: calc(100% - 76px); }
+  .chip-radio select {
+    appearance: none;
+    max-width: 100%;
+    padding: 10px 40px 10px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a2318' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center / 18px;
+    box-shadow: 0 3px 12px rgba(58, 35, 24, 0.22);
+    color: var(--ink);
+    font: 700 0.92rem var(--fuente-texto);
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  .chip-radio select:disabled { cursor: default; color: var(--ink-suave); }
+
+  .pin-wrap { width: 34px; height: 42px; cursor: pointer; background: none; border: 0; }
+  .pin-wrap.activo { z-index: 3; }
   .pin {
-    --c: var(--yema);
+    --c: var(--naranja);
     display: block;
-    width: 26px; height: 26px;
+    width: 30px; height: 30px;
     margin: 2px;
     background: var(--c);
-    border: 3px solid var(--ink);
+    border: 2.5px solid #fff;
     border-radius: 50% 50% 50% 0;
     transform: rotate(-45deg);
+    box-shadow: 0 2px 7px rgba(58, 35, 24, 0.4);
     position: relative;
+    transition: none;
   }
-  .pin::after { content: ""; position: absolute; inset: 5px; background: var(--ink); border-radius: 50%; }
-  .pin-wrap.activo .pin { background: var(--ink); }
-  .pin-wrap.activo .pin::after { background: var(--c); }
-
-  .yo {
-    width: 20px; height: 20px;
+  .pin-ico {
+    position: absolute; inset: 4px;
+    display: grid; place-items: center;
     border-radius: 50%;
-    background: var(--azul);
-    border: 3px solid #fff;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+    background: #fff;
+    transform: rotate(45deg);
+    font-style: normal;
+    font-size: 12px;
+    line-height: 1;
   }
+  .pin-wrap.activo .pin { background: var(--ink); transform: rotate(-45deg) scale(1.18); }
 
-  /* Controles del mapa: brújula, zoom y mi ubicación */
-  .maplibregl-ctrl-group button { width: 40px; height: 40px; }
+  .yo { width: 20px; height: 20px; border-radius: 50%; background: var(--azul); border: 3px solid #fff; box-shadow: 0 0 0 8px rgba(11, 107, 203, 0.2), 0 1px 4px rgba(0, 0, 0, 0.35); }
+
+  .maplibregl-ctrl-group { border-radius: 16px; overflow: hidden; }
+  .maplibregl-ctrl-group button { width: 42px; height: 42px; }
+  .maplibregl-ctrl-group.ctrl-ubic-grupo { border-radius: 50%; margin-bottom: 8px; box-shadow: 0 3px 12px rgba(58, 35, 24, 0.3); }
+  .ctrl-ubicacion { width: 50px !important; height: 50px !important; }
   .ctrl-ubicacion .maplibregl-ctrl-icon {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 29 29' fill='none' stroke='%23333' stroke-width='2'%3E%3Ccircle cx='14.5' cy='14.5' r='6'/%3E%3Ccircle cx='14.5' cy='14.5' r='2' fill='%23333'/%3E%3Cpath d='M14.5 3v5M14.5 21v5M3 14.5h5M21 14.5h5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5 4.6 20.4 12 16.6l7.4 3.8z' fill='%233a2318'/%3E%3C/svg%3E");
+    background-size: 26px;
   }
   .ctrl-ubicacion[aria-busy="true"] { opacity: 0.45; }
 
-  .maplibregl-popup-content { font-family: var(--fuente-texto); padding: 12px 36px 12px 14px; border-radius: 10px; }
-  .maplibregl-popup-close-button { width: 34px; height: 34px; font-size: 22px; color: var(--ink); }
+  .maplibregl-popup-content { font-family: var(--fuente-texto); padding: 14px 40px 14px 16px; border-radius: 18px; }
+  .maplibregl-popup-close-button { width: 36px; height: 36px; font-size: 22px; color: var(--ink); }
   .pop { display: grid; gap: 3px; }
-  .pop strong { font-size: 1.02rem; }
+  .pop strong { font-family: var(--fuente-titulo); font-weight: 600; font-size: 1.1rem; }
   .pop span { color: var(--ink-suave); font-size: 0.92rem; }
-  .pop a { margin-top: 6px; }
+  .pop .acc { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 8px; }
+  .pop a { color: var(--ink); font-weight: 700; font-size: 0.92rem; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--naranja); text-decoration-thickness: 2px; }
+  .pop .btn-det { padding: 6px 12px; font-size: 0.88rem; }
+
+  /* ---------- Ficha de detalle ---------- */
+  dialog {
+    padding: 0;
+    border: 0;
+    border-radius: 28px;
+    width: min(520px, calc(100% - 32px));
+    max-height: min(88vh, 760px);
+    background: var(--tarjeta);
+    color: var(--ink);
+    box-shadow: 0 24px 60px rgba(58, 35, 24, 0.4);
+    overflow: auto;
+  }
+  dialog::backdrop { background: rgba(58, 35, 24, 0.55); }
+  .det-media { --c: var(--naranja); position: relative; display: grid; place-items: center; height: 200px; background: color-mix(in srgb, var(--c) 30%, #fff); font-size: 80px; }
+  .det-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .det-cerrar {
+    position: absolute; right: 12px; top: 12px; z-index: 2;
+    width: 42px; height: 42px;
+    border: 0; border-radius: 50%;
+    background: #fff;
+    color: var(--ink);
+    font-size: 26px; line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(58, 35, 24, 0.3);
+  }
+  .det-cuerpo { display: grid; gap: 10px; padding: 18px 22px 22px; }
+  .det-cuerpo h2 { font-size: 1.7rem; font-weight: 600; line-height: 1.1; overflow-wrap: anywhere; padding-right: 4px; }
+  .det-cuerpo p { margin: 0; overflow-wrap: anywhere; }
+  .det-lista { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-size: 0.95rem; }
+  .det-lista dt { font-weight: 700; }
+  .det-lista dd { margin: 0; overflow-wrap: anywhere; }
+  .det-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 6px; }
+  .btn-prim, .btn-sec {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 46px;
+    padding: 0 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.98rem;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-prim { background: var(--naranja); color: var(--ink); border: 2px solid var(--naranja); }
+  .btn-prim:hover { background: #f59a55; }
+  .btn-sec { background: transparent; color: var(--ink); border: 2px solid var(--linea); }
+  .btn-sec:hover { border-color: var(--ink); }
 
   /* ---------- Móvil ---------- */
   @media (max-width: 820px) {
-    .contenido { grid-template-columns: 1fr; }
-    .mapa-wrap { position: static; height: 52vh; height: 52dvh; order: -1; }
-    .panel { padding: 16px; }
-    .cabecera { padding: 22px 16px 18px; }
-    .buscador .btn { flex: 1 1 auto; }
+    body { padding-bottom: calc(var(--alto-nav) + env(safe-area-inset-bottom)); }
+    .hero { padding: calc(14px + env(safe-area-inset-top)) 16px 20px; }
+    .hero-top { min-height: 0; }
+    .nav {
+      position: fixed; z-index: 40; left: 0; right: 0; bottom: 0;
+      justify-content: space-around;
+      gap: 0;
+      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      background: var(--tarjeta);
+      border-top: 1.5px solid var(--linea);
+    }
+    .nav-it { flex-direction: column; gap: 2px; padding: 4px 14px; border-radius: 14px; font-size: 0.78rem; min-width: 76px; justify-content: center; }
+    .nav-it[aria-current], .nav-it[aria-pressed="true"] { background: transparent; color: var(--naranja-osc); }
+    .nav-it:hover { background: transparent; }
+    main { padding: 4px 16px 28px; }
+    .seccion h2 { font-size: 1.35rem; }
+    .cerca-grid { grid-template-columns: 1fr; gap: 16px; }
+    .mapa-wrap { position: relative; top: 0; order: -1; height: 56vh; height: 56dvh; border-radius: 22px; }
+    .tarjeta-cuerpo { grid-template-columns: 88px 1fr; padding-right: 50px; }
+    .media { width: 88px; height: 88px; font-size: 36px; }
+    .dest { flex-basis: 86%; height: 220px; }
+    dialog { width: 100%; max-width: none; margin: auto 0 0; border-radius: 28px 28px 0 0; max-height: 92vh; }
   }
 
   @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
@@ -308,42 +546,92 @@
 </head>
 
 <body>
-  <a class="saltar" href="#principal">Saltar al contenido</a>
+  <a class="saltar" href="#cerca">Saltar a los sitios</a>
 
-  <header class="cabecera">
-    <div class="cabecera-in">
-      <h1 translate="no">ViveCantabria</h1>
-      <p class="intro">Restaurantes, miradores, rutas, pueblos y playas. Escribe dónde estás o usa tu ubicación y verás lo que tienes más cerca.</p>
+  <header class="hero" id="inicio">
+    <div class="hero-in">
+      <div class="hero-top">
+        <nav class="nav" aria-label="Principal">
+          <a href="#inicio" id="nav-inicio" class="nav-it" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 3 10.4V21h6.2v-6.4h5.6V21H21V10.4z"/></svg><span>Inicio</span>
+          </a>
+          <a href="#cerca" id="nav-mapa" class="nav-it">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Mapa</span>
+          </a>
+          <button type="button" id="nav-guardados" class="nav-it" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-8-5-8-10.7A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.8c0 5.7-8 10.7-8 10.7z"/></svg>
+            <span>Guardados<span id="n-guardados" class="cuenta"></span></span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="marca-bloque">
+        <svg width="76" height="76" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M32 4C20.4 4 11 13.2 11 24.6 11 39.8 32 60 32 60s21-20.2 21-35.4C53 13.2 43.6 4 32 4z" fill="#f08a3e"/>
+          <circle cx="32" cy="25" r="14" fill="#fff3e6"/>
+          <circle cx="32" cy="21.5" r="5" fill="#f4b32a"/>
+          <path d="M20.5 30c3-3 5-3 8 0s5 3 8 0 5-3 7 0" stroke="#3a2318" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <h1 translate="no">Vive<span>Cantabria</span></h1>
+      </div>
+      <p class="lema">Descubre los mejores sitios de Cantabria cerca de ti</p>
+      <svg class="subrayado" viewBox="0 0 120 10" aria-hidden="true"><path d="M2 7C30 1 70 1 118 6" stroke="#f08a3e" stroke-width="3.2" fill="none" stroke-linecap="round"/></svg>
 
       <form id="form-busqueda" class="buscador" role="search">
         <div class="campo-busqueda">
-          <label class="sr" for="direccion">Pueblo, calle o alojamiento</label>
-          <input id="direccion" type="search" name="lugar" placeholder="Ej. Santillana del Mar…" autocomplete="off"
+          <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+          <label class="sr" for="direccion">Pueblo, calle o sitio</label>
+          <input id="direccion" type="search" name="lugar" placeholder="Busca un pueblo o sitio…" autocomplete="off"
                  role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sugerencias" aria-haspopup="listbox">
+          <button type="submit" id="btn-buscar" class="btn-buscar" aria-label="Buscar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
           <ul id="sugerencias" class="sugerencias" role="listbox" aria-label="Sugerencias" hidden></ul>
           <p id="sug-estado" class="sr" role="status" aria-live="polite"></p>
         </div>
-        <button type="submit" id="btn-buscar" class="btn btn-primario">Buscar</button>
-        <button type="button" id="btn-ubicacion" class="btn btn-secundario">Usar mi ubicación</button>
+        <button type="button" id="btn-ubicacion" class="pildora">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5 4.6 20.4 12 16.6l7.4 3.8z"/></svg>
+          Usar mi ubicación
+        </button>
+        <p id="estado" class="estado" role="status" aria-live="polite"></p>
       </form>
-
-      <p id="estado" class="estado" role="status" aria-live="polite"></p>
     </div>
   </header>
 
-  <main id="principal" class="contenido">
-    <section class="panel" aria-labelledby="h-sitios">
-      <h2 id="h-sitios" class="sr">Sitios</h2>
-      <div id="filtros" class="filtros" role="group" aria-label="Filtrar por categoría"></div>
-      <div id="filtros-tipo" class="filtros filtros-tipo" role="group" aria-label="Filtrar por tipo" hidden></div>
-      <p id="resumen" class="resumen" aria-live="polite"></p>
-      <ol id="lista" class="lista"></ol>
+  <main id="principal">
+    <section id="recomendados" class="seccion" aria-labelledby="h-rec" hidden>
+      <div class="seccion-cab">
+        <h2 id="h-rec">Recomendaciones para ti</h2>
+        <a href="#cerca" class="ver-todo" id="ver-todo">Ver todo ›</a>
+      </div>
+      <ul id="destacados" class="destacados"></ul>
     </section>
 
-    <div class="mapa-wrap">
-      <div id="mapa" role="region" aria-label="Mapa de sitios"></div>
-    </div>
+    <section class="seccion" aria-labelledby="h-cat">
+      <h2 id="h-cat" style="margin-bottom:12px">Explora por categoría</h2>
+      <div id="categorias" class="categorias" role="group" aria-label="Categorías"></div>
+      <div id="filtros-tipo" class="filtros-tipo" role="group" aria-label="Filtrar por tipo" hidden></div>
+    </section>
+
+    <section id="cerca" class="seccion" aria-labelledby="h-cerca">
+      <h2 id="h-cerca">Cerca de ti</h2>
+      <p id="resumen" class="resumen" aria-live="polite"></p>
+
+      <div class="cerca-grid">
+        <ol id="lista" class="lista"></ol>
+
+        <div class="mapa-wrap">
+          <label class="chip-radio">
+            <span class="sr">Distancia máxima</span>
+            <select id="radio" disabled></select>
+          </label>
+          <div id="mapa" role="region" aria-label="Mapa de sitios"></div>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <dialog id="detalle" aria-labelledby="det-titulo"></dialog>
 
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script>
@@ -352,15 +640,20 @@
     //  Para añadir una nueva: crea el archivo en datos/ y añádela aquí.
     // =====================================================
     const CATEGORIAS = [
-      { nombre: 'Comer',     archivo: 'datos/comer.json',     color: '#f4b32a' },
-      { nombre: 'Miradores', archivo: 'datos/miradores.json', color: '#e8684a' },
-      { nombre: 'Rutas',     archivo: 'datos/rutas.json',     color: '#3f9b5a' },
-      { nombre: 'Pueblos',   archivo: 'datos/pueblos.json',   color: '#8a63c9' },
-      { nombre: 'Playas',    archivo: 'datos/playas.json',    color: '#2fb3c4' }
+      { nombre: 'Comer',     archivo: 'datos/comer.json',     color: '#f08a3e', icono: '🍽️' },
+      { nombre: 'Miradores', archivo: 'datos/miradores.json', color: '#e5594b', icono: '🌅' },
+      { nombre: 'Rutas',     archivo: 'datos/rutas.json',     color: '#4e9f5b', icono: '🥾' },
+      { nombre: 'Pueblos',   archivo: 'datos/pueblos.json',   color: '#8a63c9', icono: '🏘️' },
+      { nombre: 'Playas',    archivo: 'datos/playas.json',    color: '#2fa7b8', icono: '🏖️' }
     ];
     const REGION = 'Cantabria';
     const BBOX_REGION = '-4.9,42.7,-3.1,43.6';   // oeste, sur, este, norte (para predicción y búsqueda)
-    const colorDe = (cat) => (CATEGORIAS.find((c) => c.nombre === cat) || {}).color || '#8fa3a0';
+    const RADIOS = [0, 1, 2, 5, 10, 25, 50];      // km (0 = sin límite)
+    const CLAVE_GUARDADOS = 'vivecantabria:guardados';
+
+    const catDe = (cat) => CATEGORIAS.find((c) => c.nombre === cat) || {};
+    const colorDe = (cat) => catDe(cat).color || '#8fa3a0';
+    const iconoDe = (cat) => catDe(cat).icono || '📍';
 
     // ---------- Utilidades ----------
     const $ = (s) => document.querySelector(s);
@@ -368,9 +661,12 @@
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
     ));
     const normalizar = (t) => String(t ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    // Solo http(s) o rutas relativas (evita javascript: y similares)
+    const urlSegura = (u) => (typeof u === 'string' && /^(https?:\/\/|[\w./%-]+$)/i.test(u.trim()) ? u.trim() : '');
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const esMovil = () => matchMedia('(max-width: 820px)').matches;
     const dur = (ms) => (reduceMotion ? 0 : ms);
+    const suave = () => (reduceMotion ? 'auto' : 'smooth');
 
     function estado(texto, esError = false) {
       const el = $('#estado');
@@ -402,6 +698,39 @@
     const urlVer = (r) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(textoMaps(r));
     const urlRuta = (r) => 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(textoMaps(r));
 
+    const SVG_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+    const SVG_FLECHA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    const SVG_CORAZON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-8-5-8-10.7A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.8c0 5.7-8 10.7-8 10.7z"/></svg>';
+
+    // Si una foto no carga, se quita y se ve el icono de la categoría
+    document.addEventListener('error', (e) => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);
+
+    // ---------- Guardados (se quedan en este navegador) ----------
+    let guardados = new Set();
+    try { guardados = new Set(JSON.parse(localStorage.getItem(CLAVE_GUARDADOS) || '[]')); } catch (e) {}
+    const claveDe = (s) => s.r.categoria + '|' + s.r.nombre;
+    const esGuardado = (s) => guardados.has(claveDe(s));
+    let soloGuardados = false;
+
+    function corazonHtml(s) {
+      return `<button type="button" class="corazon" data-i="${s.i}" aria-pressed="${esGuardado(s)}" aria-label="Guardar ${esc(s.r.nombre)}">${SVG_CORAZON}</button>`;
+    }
+
+    function actualizarGuardados() {
+      document.querySelectorAll('.corazon').forEach((b) => {
+        b.setAttribute('aria-pressed', String(esGuardado(sitios[Number(b.dataset.i)])));
+      });
+      $('#n-guardados').textContent = guardados.size ? String(guardados.size) : '';
+    }
+
+    function alternarGuardado(s) {
+      const k = claveDe(s);
+      if (guardados.has(k)) guardados.delete(k); else guardados.add(k);
+      try { localStorage.setItem(CLAVE_GUARDADOS, JSON.stringify([...guardados])); } catch (e) {}
+      actualizarGuardados();
+      if (soloGuardados) pintar();
+    }
+
     // ---------- Mapa (MapLibre: permite girar el mapa y orientarlo al norte) ----------
     const mapa = new maplibregl.Map({
       container: 'mapa',
@@ -422,7 +751,7 @@
       zoom: 8,
       minZoom: 5,
       maxZoom: 18,
-      maxPitch: 0,             // sin inclinación: solo giro
+      maxPitch: 0,
       pitchWithRotate: false,
       touchPitch: false,
       attributionControl: { compact: true },
@@ -442,11 +771,11 @@
     // Brújula (gira con el mapa; al pulsarla se orienta al norte) y zoom
     mapa.addControl(new maplibregl.NavigationControl({ showCompass: true, showZoom: true, visualizePitch: false }), 'top-right');
 
-    // Botón "Ir a mi ubicación"
+    // Botón "Ir a mi ubicación" (abajo a la derecha)
     class ControlUbicacion {
       onAdd() {
         this.contenedor = document.createElement('div');
-        this.contenedor.className = 'maplibregl-ctrl maplibregl-ctrl-group';
+        this.contenedor.className = 'maplibregl-ctrl maplibregl-ctrl-group ctrl-ubic-grupo';
         const b = document.createElement('button');
         b.type = 'button';
         b.className = 'ctrl-ubicacion';
@@ -459,7 +788,7 @@
       }
       onRemove() { this.contenedor.remove(); }
     }
-    mapa.addControl(new ControlUbicacion(), 'top-right');
+    mapa.addControl(new ControlUbicacion(), 'bottom-right');
 
     // Círculo de precisión de la ubicación
     let precisionActual = null;
@@ -492,17 +821,19 @@
     let sitios = [];            // { i, r, pos, marcador, visible, dist }
     let filtroCat = 'Todos';
     let filtroTipo = 'Todos';
+    let radioKm = 0;
     let origen = null;          // { lat, lng }
     let activo = null;
     let marcadorOrigen = null;
     let lugarBuscado = null;
     let buscando = false;
 
-    // El estado (filtros y lugar buscado) vive en la URL para poder compartirla:  ?cat=Rutas&tipo=Costera&q=Santillana
+    // El estado (filtros, distancia y lugar buscado) vive en la URL:  ?cat=Rutas&tipo=Costera&km=5&q=Santillana
     function escribirUrl() {
       const p = new URLSearchParams();
       if (filtroCat !== 'Todos') p.set('cat', filtroCat);
       if (filtroTipo !== 'Todos') p.set('tipo', filtroTipo);
+      if (radioKm > 0) p.set('km', String(radioKm));
       if (lugarBuscado) p.set('q', lugarBuscado);
       const s = p.toString();
       try { history.replaceState(null, '', location.pathname + (s ? '?' + s : '') + location.hash); } catch (e) {}
@@ -510,51 +841,97 @@
 
     const visibles = () => sitios.filter((s) =>
       (filtroCat === 'Todos' || s.r.categoria === filtroCat) &&
-      (filtroTipo === 'Todos' || s.r.tipo === filtroTipo)
+      (filtroTipo === 'Todos' || s.r.tipo === filtroTipo) &&
+      (!soloGuardados || esGuardado(s)) &&
+      (radioKm === 0 || !origen || s.dist <= radioKm * 1000)
     );
 
-    // ---------- Pintar ----------
+    // ---------- Plantillas ----------
     function lineaCategoria(r) {
       return `<span class="punto" aria-hidden="true" style="background:${colorDe(r.categoria)}"></span>${esc(r.categoria)}${r.tipo ? ': ' + esc(r.tipo) : ''}`;
     }
 
-    function popupHtml(r) {
-      return `<div class="pop">
-        <strong translate="no">${esc(r.nombre)}</strong>
-        <span>${lineaCategoria(r)}</span>
-        ${r.direccion ? `<span>${esc(r.direccion)}</span>` : ''}
-        <a href="${urlVer(r)}" target="_blank" rel="noopener">Ver en Google Maps</a>
-      </div>`;
+    function distMeta(s) {
+      return s.dist != null ? `<span class="dist-meta">${SVG_PIN}${formatoDistancia(s.dist)}</span>` : '';
     }
 
-    // "detalles" es un objeto libre por sitio, p. ej. {"Distancia": "8 km", "Desnivel": "350 m"}
-    function detallesHtml(r) {
+    function etiquetasHtml(r) {
+      const e = Array.isArray(r.etiquetas) ? r.etiquetas.filter(Boolean).slice(0, 4) : [];
+      return e.length ? `<span class="etiquetas">${e.map((t) => `<span class="etiqueta">${esc(t)}</span>`).join('')}</span>` : '';
+    }
+
+    function miniDetalles(r) {
       if (!r.detalles || typeof r.detalles !== 'object') return '';
-      const items = Object.entries(r.detalles)
-        .map(([k, v]) => `<span><b>${esc(k)}:</b> ${esc(v)}</span>`).join('');
-      return items ? `<span class="detalles">${items}</span>` : '';
+      const items = Object.entries(r.detalles).slice(0, 2).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join('  ·  ');
+      return items ? `<span class="mini-detalles">${items}</span>` : '';
+    }
+
+    function mediaHtml(r) {
+      const f = urlSegura(r.foto);
+      return `<span class="media" style="--c:${colorDe(r.categoria)}"><span aria-hidden="true">${iconoDe(r.categoria)}</span>${
+        f ? `<img src="${esc(f)}" alt="" loading="lazy" decoding="async" width="104" height="104">` : ''}</span>`;
     }
 
     function tarjetaHtml(s) {
       const r = s.r;
       const esRuta = r.categoria === 'Rutas';
-      return `<li class="tarjeta" id="t-${s.i}">
+      return `<li class="tarjeta" id="t-${s.i}" style="--c:${colorDe(r.categoria)}">
         <button type="button" class="tarjeta-cuerpo" data-i="${s.i}">
-          <span class="tarjeta-top">
+          ${mediaHtml(r)}
+          <span class="tarjeta-info">
             <span class="nombre" translate="no">${esc(r.nombre)}</span>
-            ${s.dist != null ? `<span class="dist">${formatoDistancia(s.dist)}</span>` : ''}
+            <span class="meta">${distMeta(s)}${lineaCategoria(r)}</span>
+            ${r.direccion ? `<span class="dir">${esc(r.direccion)}</span>` : ''}
+            ${r.nota ? `<span class="nota">${esc(r.nota)}</span>` : ''}
+            ${miniDetalles(r)}
+            ${etiquetasHtml(r)}
           </span>
-          <span class="tipo">${lineaCategoria(r)}</span>
-          ${r.direccion ? `<span class="dir">${esc(r.direccion)}</span>` : ''}
-          ${detallesHtml(r)}
-          ${r.nota ? `<span class="nota">${esc(r.nota)}</span>` : ''}
         </button>
+        ${corazonHtml(s)}
         <div class="acciones">
-          <a href="${urlVer(r)}" target="_blank" rel="noopener">Ver en Google Maps</a>
           <a href="${urlRuta(r)}" target="_blank" rel="noopener">${esRuta ? 'Cómo llegar al inicio' : 'Cómo llegar'}</a>
-          ${r.web ? `<a href="${esc(r.web)}" target="_blank" rel="noopener">${esRuta ? 'Ver ruta' : 'Más información'}</a>` : ''}
+          <button type="button" class="btn-det" data-i="${s.i}">Ver detalles ${SVG_FLECHA}</button>
         </div>
       </li>`;
+    }
+
+    function destacadoHtml(s) {
+      const r = s.r;
+      const f = urlSegura(r.foto);
+      return `<li class="dest" style="--c:${colorDe(r.categoria)}">
+        <div class="dest-fondo"><span class="ico" aria-hidden="true">${iconoDe(r.categoria)}</span>${
+          f ? `<img src="${esc(f)}" alt="" loading="lazy" decoding="async">` : ''}</div>
+        <span class="insignia">Muy recomendado ★</span>
+        ${corazonHtml(s)}
+        <div class="dest-pie">
+          <div>
+            <h3 class="dest-nombre" translate="no">${esc(r.nombre)}</h3>
+            <p class="dest-meta">${s.dist != null ? formatoDistancia(s.dist) + '  ·  ' : ''}${esc(r.tipo || r.categoria)}</p>
+          </div>
+          <button type="button" class="btn-det" data-i="${s.i}">Ver detalles ${SVG_FLECHA}</button>
+        </div>
+      </li>`;
+    }
+
+    function popupHtml(s) {
+      const r = s.r;
+      return `<div class="pop">
+        <strong translate="no">${esc(r.nombre)}</strong>
+        <span>${lineaCategoria(r)}</span>
+        ${r.direccion ? `<span>${esc(r.direccion)}</span>` : ''}
+        <div class="acc">
+          <a href="${urlVer(r)}" target="_blank" rel="noopener">Ver en Google Maps</a>
+          <button type="button" class="btn-det" data-i="${s.i}">Detalles</button>
+        </div>
+      </div>`;
+    }
+
+    // ---------- Pintar ----------
+    function pintarDestacados() {
+      const d = sitios.filter((s) => s.r.destacado === true).slice(0, 8);
+      if (origen) d.sort((a, b) => a.dist - b.dist);
+      $('#recomendados').hidden = !d.length;
+      $('#destacados').innerHTML = d.map(destacadoHtml).join('');
     }
 
     function pintar() {
@@ -569,13 +946,18 @@
 
       $('#lista').innerHTML = vis.length
         ? vis.map(tarjetaHtml).join('')
-        : '<li class="vacio">No hay sitios con este filtro. Prueba con otro.</li>';
+        : `<li class="vacio">${soloGuardados && !guardados.size
+            ? 'Aún no has guardado ningún sitio. Toca el corazón de un sitio para tenerlo aquí.'
+            : 'No hay sitios con este filtro. Prueba con otro.'}</li>`;
 
       const n = `${vis.length} ${vis.length === 1 ? 'sitio' : 'sitios'}`;
-      $('#resumen').textContent = origen
-        ? `${n}, del más cercano al más lejano (distancia en línea recta)`
-        : `${n}. Busca dónde estás para ordenarlos por cercanía.`;
+      $('#resumen').textContent = soloGuardados
+        ? `${vis.length} ${vis.length === 1 ? 'sitio guardado' : 'sitios guardados'} en este navegador`
+        : origen
+          ? `${n}, del más cercano al más lejano (distancia en línea recta)`
+          : `${n}. Busca dónde estás para ordenarlos por cercanía.`;
 
+      pintarDestacados();
       if (activo && vis.includes(activo)) marcarActivo(activo, true);
     }
 
@@ -588,6 +970,12 @@
       if (!s.marcador.getPopup().isOpen()) s.marcador.togglePopup();
     }
 
+    // Lleva la vista al bloque "Cerca de ti" si está lejos de la pantalla
+    function verListado() {
+      const r = $('#cerca').getBoundingClientRect();
+      if (r.top > innerHeight * 0.6) $('#cerca').scrollIntoView({ behavior: suave(), block: 'start' });
+    }
+
     function destacar(s, volar) {
       if (activo) marcarActivo(activo, false);
       activo = s;
@@ -596,14 +984,10 @@
       if (volar) {
         mapa.easeTo({ center: [s.r.lng, s.r.lat], zoom: Math.max(mapa.getZoom(), 14), duration: dur(600) });
         abrirPopup(s);
-        if (esMovil()) {
-          $('.mapa-wrap').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-        }
+        const m = $('.mapa-wrap').getBoundingClientRect();
+        if (m.top < 0 || m.bottom > innerHeight) $('.mapa-wrap').scrollIntoView({ behavior: suave(), block: esMovil() ? 'start' : 'center' });
       } else {
-        document.getElementById('t-' + s.i)?.scrollIntoView({
-          block: 'nearest',
-          behavior: reduceMotion ? 'auto' : 'smooth'
-        });
+        document.getElementById('t-' + s.i)?.scrollIntoView({ block: 'nearest', behavior: suave() });
       }
     }
 
@@ -614,9 +998,9 @@
       el.tabIndex = 0;
       el.setAttribute('role', 'button');
       el.setAttribute('aria-label', `${r.nombre}, ${r.categoria}`);
-      el.innerHTML = `<span class="pin" style="--c:${colorDe(r.categoria)}"></span>`;
+      el.innerHTML = `<span class="pin" style="--c:${colorDe(r.categoria)}"><i class="pin-ico" aria-hidden="true">${iconoDe(r.categoria)}</i></span>`;
 
-      const popup = new maplibregl.Popup({ offset: [0, -32], maxWidth: '280px' }).setHTML(popupHtml(r));
+      const popup = new maplibregl.Popup({ offset: [0, -38], maxWidth: '290px' }).setHTML(popupHtml(s));
       const m = new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([r.lng, r.lat])
         .setPopup(popup);
@@ -632,20 +1016,62 @@
       return m;
     }
 
-    // ---------- Filtros (categoría y, dentro de ella, tipo) ----------
-    function chipHtml(valor, pulsado, color) {
-      return `<button type="button" class="chip" aria-pressed="${pulsado}" data-valor="${esc(valor)}">${
-        color ? `<span class="punto" aria-hidden="true" style="background:${color}"></span>` : ''
-      }${esc(valor)}</button>`;
+    // ---------- Ficha de detalle ----------
+    const dlg = $('#detalle');
+
+    function abrirDetalle(s) {
+      const r = s.r;
+      const f = urlSegura(r.foto);
+      const web = urlSegura(r.web);
+      const esRuta = r.categoria === 'Rutas';
+      const det = r.detalles && typeof r.detalles === 'object' ? Object.entries(r.detalles) : [];
+
+      dlg.innerHTML = `
+        <div class="det-media" style="--c:${colorDe(r.categoria)}">
+          <span aria-hidden="true">${iconoDe(r.categoria)}</span>
+          ${f ? `<img src="${esc(f)}" alt="" decoding="async">` : ''}
+          <button type="button" class="det-cerrar" aria-label="Cerrar">×</button>
+        </div>
+        <div class="det-cuerpo">
+          <h2 id="det-titulo" translate="no">${esc(r.nombre)}</h2>
+          <p class="meta">${s.dist != null ? distMeta(s) : ''}${lineaCategoria(r)}</p>
+          ${r.direccion ? `<p class="dir">${esc(r.direccion)}</p>` : ''}
+          ${etiquetasHtml(r)}
+          ${r.nota ? `<p>${esc(r.nota)}</p>` : ''}
+          ${det.length ? `<dl class="det-lista">${det.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : ''}
+          <div class="det-acciones">
+            <a class="btn-prim" href="${urlVer(r)}" target="_blank" rel="noopener">Ver en Google Maps</a>
+            <a class="btn-sec" href="${urlRuta(r)}" target="_blank" rel="noopener">${esRuta ? 'Cómo llegar al inicio' : 'Cómo llegar'}</a>
+            ${web ? `<a class="btn-sec" href="${esc(web)}" target="_blank" rel="noopener">${esRuta ? 'Ver ruta' : 'Más información'}</a>` : ''}
+            <button type="button" class="btn-sec" data-mapa="${s.i}">Ver en el mapa</button>
+            ${corazonHtml(s)}
+          </div>
+        </div>`;
+      dlg.showModal();
     }
 
-    function construirFiltros() {
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg || e.target.closest('.det-cerrar')) { dlg.close(); return; }
+      const m = e.target.closest('[data-mapa]');
+      if (m) { dlg.close(); destacar(sitios[Number(m.dataset.mapa)], true); }
+    });
+
+    // Acciones comunes (tarjetas, recomendaciones, popups y ficha)
+    document.addEventListener('click', (e) => {
+      const d = e.target.closest('.btn-det');
+      if (d) { abrirDetalle(sitios[Number(d.dataset.i)]); return; }
+      const h = e.target.closest('.corazon');
+      if (h) alternarGuardado(sitios[Number(h.dataset.i)]);
+    });
+
+    // ---------- Filtros: categorías, tipos y distancia ----------
+    function construirCategorias() {
       const presentes = CATEGORIAS.filter((c) => sitios.some((s) => s.r.categoria === c.nombre));
-      const cont = $('#filtros');
-      if (presentes.length < 2) { cont.hidden = true; return; }
-      cont.hidden = false;
-      cont.innerHTML = chipHtml('Todos', filtroCat === 'Todos') +
-        presentes.map((c) => chipHtml(c.nombre, filtroCat === c.nombre, c.color)).join('');
+      const cont = $('#categorias');
+      const tile = (valor, icono, color) =>
+        `<button type="button" class="cat" aria-pressed="${filtroCat === valor}" data-valor="${esc(valor)}" style="--c:${color}">
+           <span class="cat-ico" aria-hidden="true">${icono}</span><span>${esc(valor)}</span></button>`;
+      cont.innerHTML = tile('Todos', '🧭', '#f08a3e') + presentes.map((c) => tile(c.nombre, c.icono, c.color)).join('');
     }
 
     function construirFiltrosTipo() {
@@ -654,9 +1080,18 @@
         sitios.filter((s) => s.r.categoria === filtroCat).map((s) => s.r.tipo).filter(Boolean)
       )];
       if (tipos.length < 2) { cont.hidden = true; cont.innerHTML = ''; return; }
+      const chip = (valor) => `<button type="button" class="chip" aria-pressed="${filtroTipo === valor}" data-valor="${esc(valor)}">${esc(valor)}</button>`;
       cont.hidden = false;
-      cont.innerHTML = chipHtml('Todos', filtroTipo === 'Todos') +
-        tipos.map((t) => chipHtml(t, filtroTipo === t)).join('');
+      cont.innerHTML = chip('Todos') + tipos.map(chip).join('');
+    }
+
+    function construirRadio() {
+      const sel = $('#radio');
+      sel.innerHTML = RADIOS.map((k) =>
+        `<option value="${k}">${k === 0 ? 'Mostrando todos los lugares' : 'Mostrando lugares a menos de ' + k + ' km'}</option>`).join('');
+      sel.value = String(radioKm);
+      sel.disabled = !origen;
+      sel.title = origen ? '' : 'Busca dónde estás para filtrar por distancia';
     }
 
     function ajustarVista() {
@@ -665,16 +1100,33 @@
       if (pts.length) mapa.fitBounds(limites(pts), { padding: 50, maxZoom: 12, duration: dur(500) });
     }
 
-    $('#filtros').addEventListener('click', (e) => {
-      const b = e.target.closest('.chip');
-      if (!b) return;
-      filtroCat = b.dataset.valor;
-      filtroTipo = 'Todos';
-      construirFiltros();
+    function encuadrarOrigen() {
+      if (!origen) return;
+      const vis = visibles().sort((a, b) => a.dist - b.dist).slice(0, radioKm > 0 ? 30 : 3);
+      mapa.fitBounds(limites([[origen.lng, origen.lat], ...vis.map((s) => [s.r.lng, s.r.lat])]), {
+        padding: esMovil() ? 40 : 70,
+        maxZoom: 15,
+        duration: dur(700)
+      });
+    }
+
+    function cambiarFiltros() {
+      construirCategorias();
       construirFiltrosTipo();
       pintar();
       ajustarVista();
       escribirUrl();
+    }
+
+    $('#categorias').addEventListener('click', (e) => {
+      const b = e.target.closest('.cat');
+      if (!b) return;
+      filtroCat = b.dataset.valor;
+      filtroTipo = 'Todos';
+      soloGuardados = false;
+      actualizarNavGuardados();
+      cambiarFiltros();
+      verListado();
     });
 
     $('#filtros-tipo').addEventListener('click', (e) => {
@@ -687,11 +1139,47 @@
       escribirUrl();
     });
 
+    $('#radio').addEventListener('change', (e) => {
+      radioKm = Number(e.target.value);
+      pintar();
+      encuadrarOrigen();
+      escribirUrl();
+    });
+
     $('#lista').addEventListener('click', (e) => {
       const b = e.target.closest('.tarjeta-cuerpo');
       if (!b) return;
       destacar(sitios[Number(b.dataset.i)], true);
     });
+
+    // "Ver todo" quita filtros y muestra el listado completo
+    $('#ver-todo').addEventListener('click', () => {
+      filtroCat = 'Todos'; filtroTipo = 'Todos'; soloGuardados = false;
+      actualizarNavGuardados();
+      cambiarFiltros();
+    });
+
+    // ---------- Navegación (Inicio / Mapa / Guardados) ----------
+    function actualizarNavGuardados() {
+      $('#nav-guardados').setAttribute('aria-pressed', String(soloGuardados));
+    }
+
+    $('#nav-guardados').addEventListener('click', () => {
+      soloGuardados = !soloGuardados;
+      if (soloGuardados) { filtroCat = 'Todos'; filtroTipo = 'Todos'; }
+      actualizarNavGuardados();
+      cambiarFiltros();
+      if (soloGuardados) $('#cerca').scrollIntoView({ behavior: suave(), block: 'start' });
+    });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => {
+        const enMapa = e.isIntersecting;
+        const a = $('#nav-mapa'), b = $('#nav-inicio');
+        if (enMapa) { a.setAttribute('aria-current', 'location'); b.removeAttribute('aria-current'); }
+        else { b.setAttribute('aria-current', 'page'); a.removeAttribute('aria-current'); }
+      }, { rootMargin: '-45% 0px -45% 0px' }).observe($('#cerca'));   // activo cuando cruza el centro de la pantalla
+    }
 
     // ---------- Punto de referencia (tu ubicación o un lugar buscado) ----------
     function fijarOrigen(latlng, etiqueta, precision, ajustar = true) {
@@ -711,19 +1199,9 @@
       dibujarPrecision();
 
       sitios.forEach((s) => { s.dist = metros(origen, s.pos); });
+      construirRadio();
       pintar();
-
-      if (ajustar) {
-        const cercanos = visibles()
-          .sort((a, b) => a.dist - b.dist)
-          .slice(0, 3)
-          .map((s) => [s.r.lng, s.r.lat]);
-        mapa.fitBounds(limites([[origen.lng, origen.lat], ...cercanos]), {
-          padding: esMovil() ? 40 : 70,
-          maxZoom: 15,
-          duration: dur(700)
-        });
-      }
+      if (ajustar) encuadrarOrigen();
     }
 
     // ---------- Buscar un lugar (Nominatim / OpenStreetMap), con preferencia por Cantabria ----------
@@ -734,7 +1212,7 @@
       buscando = true;
       const btn = $('#btn-buscar');
       btn.disabled = true;
-      btn.textContent = 'Buscando…';
+      btn.setAttribute('aria-label', 'Buscando…');
       estado('Buscando…');
       try {
         const url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=es&countrycodes=es&viewbox=' + BBOX_REGION + '&q='
@@ -752,12 +1230,13 @@
         lugarBuscado = q;
         escribirUrl();
         estado('Sitios cerca de: ' + d.display_name.split(',').slice(0, 3).join(','));
+        verListado();
       } catch (err) {
         estado('No se pudo buscar ahora. Inténtalo de nuevo en un momento.', true);
       } finally {
         buscando = false;
         btn.disabled = false;
-        btn.textContent = 'Buscar';
+        btn.setAttribute('aria-label', 'Buscar');
       }
     }
 
@@ -854,13 +1333,12 @@
       if (it.tipo === 'sitio') {
         // Si el filtro actual lo oculta, se quitan los filtros para poder verlo
         if (!visibles().includes(it.s)) {
-          filtroCat = 'Todos';
-          filtroTipo = 'Todos';
-          construirFiltros();
-          construirFiltrosTipo();
-          pintar();
-          escribirUrl();
+          filtroCat = 'Todos'; filtroTipo = 'Todos'; soloGuardados = false; radioKm = 0;
+          actualizarNavGuardados();
+          construirRadio();
+          cambiarFiltros();
         }
+        verListado();
         destacar(it.s, true);
         estado('Mostrando: ' + it.s.r.nombre);
       } else {
@@ -869,6 +1347,7 @@
         lugarBuscado = it.etiqueta;
         escribirUrl();
         estado('Sitios cerca de: ' + it.etiqueta);
+        verListado();
       }
     }
 
@@ -985,6 +1464,8 @@
       return { todos, fallidas, sinCoordenadas };
     }
 
+    construirRadio();
+
     cargarDatos().then(({ todos, fallidas, sinCoordenadas }) => {
       sitios = todos.map((r, i) => {
         const s = { i, r, pos: { lat: r.lat, lng: r.lng }, visible: false, dist: null };
@@ -999,9 +1480,12 @@
         const tipoUrl = params.get('tipo');
         if (tipoUrl && sitios.some((s) => s.r.categoria === catUrl && s.r.tipo === tipoUrl)) filtroTipo = tipoUrl;
       }
+      const kmUrl = Number(params.get('km'));
+      if (RADIOS.includes(kmUrl)) { radioKm = kmUrl; construirRadio(); }
 
-      construirFiltros();
+      construirCategorias();
       construirFiltrosTipo();
+      actualizarGuardados();
       pintar();
       ajustarVista();
 
