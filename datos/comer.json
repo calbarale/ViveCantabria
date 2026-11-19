@@ -5,14 +5,18 @@
     "direccion": "Calle de ejemplo 1, Santander",
     "lat": 43.4645,
     "lng": -3.8085,
-    "nota": "Ejemplo: sustituye estos sitios por los tuyos. Es un nombre inventado."
+    "nota": "Ejemplo: sustituye estos sitios por los tuyos. Es un nombre inventado.",
+    "etiquetas": [
+      "Brunch",
+      "Con vistas"
+    ]
   },
   {
     "nombre": "Bar de ejemplo",
     "tipo": "Rabas y raciones",
     "direccion": "Calle de ejemplo 2, Santander",
     "lat": 43.4605,
-    "lng": -3.8130
+    "lng": -3.813
   },
   {
     "nombre": "Restaurante de ejemplo 1",
@@ -20,7 +24,9 @@
     "direccion": "Calle de ejemplo 3, Santoña",
     "lat": 43.4449,
     "lng": -3.4554,
-    "detalles": { "Reserva": "recomendada (ejemplo)" }
+    "detalles": {
+      "Reserva": "recomendada (ejemplo)"
+    }
   },
   {
     "nombre": "Restaurante de ejemplo 2",

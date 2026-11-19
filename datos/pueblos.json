@@ -4,8 +4,12 @@
     "tipo": "Medieval",
     "direccion": "Santillana del Mar, Cantabria",
     "lat": 43.3907,
-    "lng": -4.1080,
-    "nota": "Ejemplo: escribe aquí qué ver y cuánto tiempo dedicarle."
+    "lng": -4.108,
+    "nota": "Ejemplo: escribe aquí qué ver y cuánto tiempo dedicarle.",
+    "destacado": true,
+    "etiquetas": [
+      "Para pasear"
+    ]
   },
   {
     "nombre": "Comillas",
@@ -39,7 +43,7 @@
     "nombre": "Bárcena Mayor",
     "tipo": "Montaña",
     "direccion": "Bárcena Mayor, Los Tojos, Cantabria",
-    "lat": 43.1430,
+    "lat": 43.143,
     "lng": -4.1933
   }
 ]

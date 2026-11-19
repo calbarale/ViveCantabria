@@ -18,14 +18,18 @@
     "nombre": "Oyambre",
     "tipo": "Surf",
     "direccion": "Playa de Oyambre, San Vicente de la Barquera",
-    "lat": 43.3940,
-    "lng": -4.3359
+    "lat": 43.394,
+    "lng": -4.3359,
+    "destacado": true,
+    "etiquetas": [
+      "Surf"
+    ]
   },
   {
     "nombre": "Berria",
     "tipo": "Natural",
     "direccion": "Playa de Berria, Santoña",
-    "lat": 43.4650,
+    "lat": 43.465,
     "lng": -3.4685
   },
   {

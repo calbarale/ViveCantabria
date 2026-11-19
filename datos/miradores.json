@@ -5,7 +5,12 @@
     "direccion": "Faro de Cabo Mayor, Santander",
     "lat": 43.4903,
     "lng": -3.7906,
-    "nota": "Ejemplo: escribe aquí tu consejo, como la mejor hora para ir."
+    "nota": "Ejemplo: escribe aquí tu consejo, como la mejor hora para ir.",
+    "destacado": true,
+    "etiquetas": [
+      "Atardecer",
+      "Vistas al mar"
+    ]
   },
   {
     "nombre": "Peña Cabarga",
