@@ -31,15 +31,17 @@
     --fuente-titulo: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
     --fuente-texto: "Nunito", "Segoe UI", system-ui, sans-serif;
     --alto-nav: 68px;
+    --alto-barra: 68px;
   }
 
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html { scroll-padding-top: 12px; -webkit-tap-highlight-color: rgba(240, 138, 62, 0.18); }
+  /* Los saltos a secciones dejan sitio a la barra fija de arriba */
+  html { scroll-padding-top: calc(var(--alto-barra) + env(safe-area-inset-top) + 12px); -webkit-tap-highlight-color: rgba(240, 138, 62, 0.18); }
 
   body {
     margin: 0;
-    background: var(--fondo);
+    background: linear-gradient(180deg, #fdeedf 0, var(--fondo) 520px) no-repeat, var(--fondo);
     color: var(--ink);
     font-family: var(--fuente-texto);
     font-size: 1rem;
@@ -78,13 +80,39 @@
   .btn, .chip, .cat, .nav-it, .tarjeta-cuerpo, .corazon, .pildora { touch-action: manipulation; font-family: inherit; }
   svg { display: block; }
 
+  /* ---------- Barra fija: logo + navegación (en móvil la navegación va abajo) ---------- */
+  .barra {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: env(safe-area-inset-top) 20px 0;
+    background: transparent;
+    transition: background-color 0.2s, box-shadow 0.2s;
+  }
+  .barra.con-sombra {
+    background: rgba(252, 243, 236, 0.97);
+    box-shadow: 0 1px 0 var(--linea), 0 8px 20px rgba(58, 35, 24, 0.07);
+  }
+  .barra-in {
+    max-width: 1240px;
+    height: var(--alto-barra);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .marca { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; border-radius: 14px; }
+  .marca svg { width: 46px; height: 46px; flex: none; }
+  .marca h1 { font-weight: 700; font-size: 2rem; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+  .marca h1 span { color: var(--naranja-osc); }
+
   /* ---------- Cabecera ---------- */
   .hero {
     position: relative;
     z-index: 30;
     overflow-x: clip;
-    background: linear-gradient(180deg, #fdeedf 0%, var(--fondo) 100%);
-    padding: calc(18px + env(safe-area-inset-top)) 20px 26px;
+    padding: 6px 20px 26px;
   }
   .hero::before, .hero::after {
     content: "";
@@ -99,19 +127,15 @@
 
   .hero-in { max-width: 1240px; margin: 0 auto; }
 
-  .hero-top { display: flex; justify-content: flex-end; min-height: 44px; }
-
-  .marca-bloque { display: flex; align-items: center; gap: 14px; margin: 4px 0 6px; }
-  .hero h1 {
+  .lema {
+    margin: 8px 0 0;
+    font-family: var(--fuente-titulo);
+    font-size: clamp(1.6rem, 4.2vw, 2.6rem);
+    line-height: 1.12;
+    max-width: 22ch;
     font-weight: 700;
-    font-size: clamp(2.4rem, 7vw, 4rem);
-    line-height: 1;
-    letter-spacing: -0.01em;
     text-wrap: balance;
   }
-  .hero h1 span { color: var(--naranja-osc); }
-
-  .lema { margin: 8px 0 0; font-size: 1.15rem; max-width: 34ch; font-weight: 600; text-wrap: balance; }
   .subrayado { width: 120px; height: 10px; margin: 6px 0 20px; }
 
   .buscador { display: flex; flex-wrap: wrap; gap: 10px 12px; align-items: center; max-width: 760px; }
@@ -394,9 +418,9 @@
   /* ---------- Mapa ---------- */
   .mapa-wrap {
     position: sticky;
-    top: 16px;
-    height: min(calc(100vh - 32px), 760px);
-    height: min(calc(100dvh - 32px), 760px);
+    top: calc(var(--alto-barra) + 16px);
+    height: min(calc(100vh - var(--alto-barra) - 32px), 760px);
+    height: min(calc(100dvh - var(--alto-barra) - 32px), 760px);
     border-radius: 26px;
     overflow: hidden;
     border: 1.5px solid var(--linea);
@@ -517,9 +541,12 @@
 
   /* ---------- Móvil ---------- */
   @media (max-width: 820px) {
+    :root { --alto-barra: 58px; }
     body { padding-bottom: calc(var(--alto-nav) + env(safe-area-inset-bottom)); }
-    .hero { padding: calc(14px + env(safe-area-inset-top)) 16px 20px; }
-    .hero-top { min-height: 0; }
+    .barra { padding: env(safe-area-inset-top) 16px 0; }
+    .marca svg { width: 38px; height: 38px; }
+    .marca h1 { font-size: 1.6rem; }
+    .hero { padding: 4px 16px 20px; }
     .nav {
       position: fixed; z-index: 40; left: 0; right: 0; bottom: 0;
       justify-content: space-around;
@@ -548,9 +575,17 @@
 <body>
   <a class="saltar" href="#cerca">Saltar a los sitios</a>
 
-  <header class="hero" id="inicio">
-    <div class="hero-in">
-      <div class="hero-top">
+  <header class="barra">
+    <div class="barra-in">
+      <a class="marca" href="#inicio" aria-label="ViveCantabria, ir al inicio">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M32 4C20.4 4 11 13.2 11 24.6 11 39.8 32 60 32 60s21-20.2 21-35.4C53 13.2 43.6 4 32 4z" fill="#f08a3e"/>
+          <circle cx="32" cy="25" r="14" fill="#fff3e6"/>
+          <circle cx="32" cy="21.5" r="5" fill="#f4b32a"/>
+          <path d="M20.5 30c3-3 5-3 8 0s5 3 8 0 5-3 7 0" stroke="#3a2318" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <h1 translate="no">Vive<span>Cantabria</span></h1>
+      </a>
         <nav class="nav" aria-label="Principal">
           <a href="#inicio" id="nav-inicio" class="nav-it" aria-current="page">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 3 10.4V21h6.2v-6.4h5.6V21H21V10.4z"/></svg><span>Inicio</span>
@@ -563,17 +598,11 @@
             <span>Guardados<span id="n-guardados" class="cuenta"></span></span>
           </button>
         </nav>
-      </div>
+    </div>
+  </header>
 
-      <div class="marca-bloque">
-        <svg width="76" height="76" viewBox="0 0 64 64" aria-hidden="true">
-          <path d="M32 4C20.4 4 11 13.2 11 24.6 11 39.8 32 60 32 60s21-20.2 21-35.4C53 13.2 43.6 4 32 4z" fill="#f08a3e"/>
-          <circle cx="32" cy="25" r="14" fill="#fff3e6"/>
-          <circle cx="32" cy="21.5" r="5" fill="#f4b32a"/>
-          <path d="M20.5 30c3-3 5-3 8 0s5 3 8 0 5-3 7 0" stroke="#3a2318" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-        </svg>
-        <h1 translate="no">Vive<span>Cantabria</span></h1>
-      </div>
+  <section class="hero" id="inicio" aria-label="Buscar sitios">
+    <div class="hero-in">
       <p class="lema">Descubre los mejores sitios de Cantabria cerca de ti</p>
       <svg class="subrayado" viewBox="0 0 120 10" aria-hidden="true"><path d="M2 7C30 1 70 1 118 6" stroke="#f08a3e" stroke-width="3.2" fill="none" stroke-linecap="round"/></svg>
 
@@ -596,7 +625,7 @@
         <p id="estado" class="estado" role="status" aria-live="polite"></p>
       </form>
     </div>
-  </header>
+  </section>
 
   <main id="principal">
     <section id="recomendados" class="seccion" aria-labelledby="h-rec" hidden>
@@ -657,7 +686,14 @@
 
     // ---------- Utilidades ----------
     const $ = (s) => document.querySelector(s);
-    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
+
+    // La barra fija se vuelve opaca con sombra en cuanto se baja un poco
+    const barra = $('.barra');
+    const sombraBarra = () => barra.classList.toggle('con-sombra', scrollY > 4);
+    addEventListener('scroll', sombraBarra, { passive: true });
+    sombraBarra();
+
+    const esc =(s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
     ));
     const normalizar = (t) => String(t ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
