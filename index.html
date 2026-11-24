@@ -1048,8 +1048,23 @@
       if (r.top > innerHeight * 0.6) $('#cerca').scrollIntoView({ behavior: suave(), block: 'start' });
     }
 
+    // Quita la selección: se llama al cerrar la ventanita del sitio (con la X o tocando
+    // fuera en el mapa), al volver a tocar el sitio seleccionado o con la tecla Esc.
+    function quitarSeleccion() {
+      if (!activo) return;
+      const s = activo;
+      activo = null;
+      marcarActivo(s, false);
+      if (s.marcador.getPopup().isOpen()) s.marcador.togglePopup();
+    }
+
     function destacar(s, volar) {
-      if (activo) marcarActivo(activo, false);
+      if (activo && activo !== s) {
+        const previo = activo;
+        activo = null;
+        marcarActivo(previo, false);
+        if (previo.marcador.getPopup().isOpen()) previo.marcador.togglePopup();
+      }
       activo = s;
       marcarActivo(s, true);
 
@@ -1073,6 +1088,7 @@
       el.innerHTML = `<span class="pin" style="--c:${colorDe(r.categoria)}"><i class="pin-ico" aria-hidden="true">${iconoDe(r.categoria)}</i></span>`;
 
       const popup = new maplibregl.Popup({ offset: [0, -38], maxWidth: '290px' }).setHTML(popupHtml(s));
+      popup.on('close', () => { if (activo === s) quitarSeleccion(); });
       const m = new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([r.lng, r.lat])
         .setPopup(popup);
@@ -1160,7 +1176,7 @@
     function construirRadio() {
       const sel = $('#radio');
       sel.innerHTML = RADIOS.map((k) =>
-        `<option value="${k}">${k === 0 ? 'Mostrando todos los lugares' : 'Mostrando lugares a menos de ' + k + ' km'}</option>`).join('');
+        `<option value="${k}">${k === 0 ? 'Sin límite de distancia' : 'Distancia menor de ' + k + ' km'}</option>`).join('');
       sel.value = String(radioKm);
       sel.disabled = !origen;
       sel.title = origen ? '' : 'Busca dónde estás para filtrar por distancia';
@@ -1221,7 +1237,13 @@
     $('#lista').addEventListener('click', (e) => {
       const b = e.target.closest('.tarjeta-cuerpo');
       if (!b) return;
-      destacar(sitios[Number(b.dataset.i)], true);
+      const s = sitios[Number(b.dataset.i)];
+      if (activo === s) quitarSeleccion();   // tocar otra vez el sitio seleccionado lo deselecciona
+      else destacar(s, true);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !dlg.open) quitarSeleccion();
     });
 
     // "Ver todo" quita filtros y muestra el listado completo
